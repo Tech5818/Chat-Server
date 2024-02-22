@@ -48,6 +48,16 @@ class UserService {
     }
   }
 
+  async getUsers() {
+    try {
+      const users = await prisma.user.findMany();
+
+      return users;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   async updateUser(email: string, editData: IUpdateUser) {
     try {
       const user = await prisma.user.findUnique({
@@ -83,6 +93,24 @@ class UserService {
       });
 
       return updateUser;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async deleteUser(email: string) {
+    try {
+      const deleteUser = await prisma.user.delete({
+        where: {
+          email,
+        },
+      });
+
+      if (!deleteUser) {
+        return false;
+      }
+
+      return deleteUser;
     } catch (error) {
       console.error(error);
     }
