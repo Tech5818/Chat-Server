@@ -78,37 +78,10 @@ app.set("port", port);
  */
 
 const server = http.createServer(app);
-import { Server, Socket } from "socket.io";
-const io = new Server(server, {
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  },
-});
-
-io.on("connection", (socket: Socket) => {
-  console.log(`connect ID: ${socket.id}`);
-
-  socket.on("join", (id: string) => {
-    socket.data.id = id;
-  });
-
-  socket.on("message", (data: { id: string; message: string }) => {
-    const { id, message } = data;
-    const sockets = Array.from(io.sockets.sockets.values()).filter(
-      (socket: Socket) => socket.data.id === id
-    );
-    sockets.forEach((socket) => {
-      socket.emit(message);
-    });
-  });
-
-  socket.on("disconnect", () => {
-    console.log("disconnect");
-  });
-});
+import { setSocketServer } from "../src/socket";
+import SocketService from "../src/service/SocketService";
+const socketService = new SocketService();
+setSocketServer(server, socketService);
 /**
  * Listen on provided port, on all network interfaces.
  */

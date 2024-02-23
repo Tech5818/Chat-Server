@@ -24,13 +24,15 @@ import { useContainer } from "routing-controllers";
 import Container from "typedi";
 import UserService from "./src/service/UserService";
 import UserContoller from "./src/controllers/UserController";
+import RoomService from "./src/service/RoomService";
+import RoomController from "./src/controllers/RoomController";
 
 Container.set(UserService, new UserService());
-
+Container.set(RoomService, new RoomService());
 useContainer(Container);
 
 useExpressServer(app, {
-  controllers: [UserContoller],
+  controllers: [UserContoller, RoomController],
 });
 
 export default app;

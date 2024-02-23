@@ -19,7 +19,7 @@ model User {
   email String @unique
   password String
   createAt DateTime @default(now())
-  rooms UserRooms[]
+  rooms UserRoom[]
   sentMessages Message[] @relation("sentMessages")
   receviedMessages Message[] @relation("receviedMessages")
 }
@@ -27,7 +27,7 @@ model User {
 model Room {
   id Int @id @default(autoincrement())
   name String
-  users UserRooms[]
+  users UserRoom[]
   messages Message[]
 }
 
@@ -43,7 +43,7 @@ model Message {
   createAt DateTime @default(now())
 }
 
-model UserRooms {
+model UserRoom {
   id Int @id @default(autoincrement())
   userId Int
   roomId Int
