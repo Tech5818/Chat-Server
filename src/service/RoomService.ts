@@ -58,6 +58,20 @@ class RoomService {
     }
   }
 
+  async getRooms() {
+    try {
+      const rooms = await prisma.room.findMany({
+        include: {
+          users: true,
+        },
+      });
+
+      return rooms;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   async joinRoom(roomId: number, email: string) {
     try {
       const user = await prisma.user.findUnique({

@@ -54,6 +54,18 @@ class RoomController {
     }
   }
 
+  @Get("/getAll")
+  @HttpCode(200)
+  async getRooms(@Res() res: Response) {
+    try {
+      const rooms = await this.roomService.getRooms();
+
+      return res.status(200).json({ data: rooms });
+    } catch (error) {
+      res.status(500).json({ error });
+    }
+  }
+
   @Put("/join")
   @HttpCode(200)
   async joinRoom(
