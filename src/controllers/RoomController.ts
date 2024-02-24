@@ -4,6 +4,7 @@ import {
   HttpCode,
   JsonController,
   Post,
+  Put,
   QueryParam,
   Res,
 } from "routing-controllers";
@@ -46,6 +47,28 @@ class RoomController {
         return res
           .status(404)
           .json({ error: "해당 id를 가지는 방은 존재하지 않습니다." });
+
+      return res.status(200).json({ data: room });
+    } catch (error) {
+      res.status(500).json({ error });
+    }
+  }
+
+  @Put("/join")
+  @HttpCode(200)
+  async joinRoom(
+    @Body() body: { roomId: number; email: string },
+    @Res() res: Response
+  ) {
+    try {
+      console.log(typeof body.roomId);
+
+      const room = await this.roomService.joinRoom(body.roomId, body.email);
+
+      if (!room)
+        return res
+          .status(404)
+          .json({ error: "방의 id또는 유저의 email이 잘못되었습니다." });
 
       return res.status(200).json({ data: room });
     } catch (error) {

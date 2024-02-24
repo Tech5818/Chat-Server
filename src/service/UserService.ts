@@ -36,6 +36,9 @@ class UserService {
         where: {
           email,
         },
+        include: {
+          rooms: true,
+        },
       });
 
       if (!user) {
@@ -50,7 +53,7 @@ class UserService {
 
   async getUsers() {
     try {
-      const users = await prisma.user.findMany();
+      const users = await prisma.user.findMany({ include: { rooms: true } });
 
       return users;
     } catch (error) {

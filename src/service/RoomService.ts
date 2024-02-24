@@ -44,6 +44,10 @@ class RoomService {
         where: {
           id,
         },
+        include: {
+          users: true,
+          messages: true,
+        },
       });
 
       if (!room) return null;
@@ -63,6 +67,7 @@ class RoomService {
       });
 
       if (!user) return null;
+      console.log(typeof roomId);
 
       const room = await prisma.room.findUnique({
         where: {
@@ -71,18 +76,10 @@ class RoomService {
       });
 
       if (!room) return null;
-
-      const joinRoom = await prisma.room.create({
-        data: {
-          id: room.id,
-          name: room.name,
-        },
-      });
-
       const userRoom = await prisma.userRoom.create({
         data: {
+          roomId: room.id,
           userId: user.id,
-          roomId: joinRoom.id,
         },
       });
 
