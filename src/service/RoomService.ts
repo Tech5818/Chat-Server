@@ -139,19 +139,27 @@ class RoomService {
   }
   async deleteRoom(id: number) {
     try {
-      const room = await prisma.room.delete({
+      const room = await prisma.room.findUnique({
         where: {
           id,
         },
       });
 
-      const userRooms = await prisma.userRoom.deleteMany({
+      if (!room) return null;
+
+      await prisma.userRoom.deleteMany({
         where: {
           roomId: room.id,
         },
       });
 
-      return userRooms;
+      const deleteRoom = await prisma.room.delete({
+        where: {
+          id: room.id,
+        },
+      });
+
+      return deleteRoom;
     } catch (error) {
       console.error(error);
     }

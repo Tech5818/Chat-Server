@@ -109,6 +109,23 @@ class RoomController {
       res.status(500).json({ error });
     }
   }
+
+  @Delete("/delete")
+  @HttpCode(200)
+  async deleteRoom(@Body() body: { roomId: number }, @Res() res: Response) {
+    try {
+      const room = await this.roomService.deleteRoom(body.roomId);
+
+      if (!room)
+        return res
+          .status(404)
+          .json({ error: "해당 id를 가지는 방은 존재하지 않습니다." });
+
+      return res.status(200).json({ data: room });
+    } catch (error) {
+      res.status(500).json({ error });
+    }
+  }
 }
 
 export default RoomController;
