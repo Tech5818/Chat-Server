@@ -1,8 +1,10 @@
 import {
   Body,
+  Delete,
   Get,
   HttpCode,
   JsonController,
+  Patch,
   Post,
   Put,
   QueryParam,
@@ -76,6 +78,26 @@ class RoomController {
       console.log(typeof body.roomId);
 
       const room = await this.roomService.joinRoom(body.roomId, body.email);
+
+      if (!room)
+        return res
+          .status(404)
+          .json({ error: "방의 id또는 유저의 email이 잘못되었습니다." });
+
+      return res.status(200).json({ data: room });
+    } catch (error) {
+      res.status(500).json({ error });
+    }
+  }
+
+  @Patch("/leave")
+  @HttpCode(200)
+  async leaveRoom(
+    @Body() body: { roomId: number; email: string },
+    @Res() res: Response
+  ) {
+    try {
+      const room = await this.roomService.leaveRoom(body.roomId, body.email);
 
       if (!room)
         return res
