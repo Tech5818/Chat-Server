@@ -79,9 +79,11 @@ app.set("port", port);
 
 const server = http.createServer(app);
 import { setSocketServer } from "../src/socket";
-import SocketService from "../src/service/SocketService";
-const socketService = new SocketService();
-setSocketServer(server, socketService);
+import RoomService from "../src/service/RoomService";
+import UserService from "../src/service/UserService";
+const roomService = new RoomService();
+const userService = new UserService();
+setSocketServer(server, roomService, userService);
 /**
  * Listen on provided port, on all network interfaces.
  */

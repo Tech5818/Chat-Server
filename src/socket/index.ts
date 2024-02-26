@@ -1,10 +1,12 @@
 import { Server, Socket } from "socket.io";
 import http from "http";
-import SocketService from "../service/SocketService";
+import RoomService from "../service/RoomService";
+import UserService from "../service/UserService";
 
 export const setSocketServer = (
   server: http.Server,
-  service: SocketService
+  roomService: RoomService,
+  userService: UserService
 ) => {
   const io = new Server(server, {
     cors: {
@@ -17,22 +19,27 @@ export const setSocketServer = (
 
   io.on("connection", async (socket: Socket) => {
     console.log(`connect ID: ${socket.id}`);
-    socket.on("join", (id: string) => {
-      socket.data.id = id;
-    });
 
-    socket.on("message", (data: { id: string; message: string }) => {
-      const { id, message } = data;
-      const sockets = Array.from(io.sockets.sockets.values()).filter(
-        (socket: Socket) => socket.data.id === id
-      );
-      sockets.forEach((socket) => {
-        socket.emit(message);
+    socket.on("join", async (data: { email: string }) => {
+      const user = await userService.getUser(data.email);
+
+      const userInRooms = await userService.getInRooms(user?.email!);
+
+      const room = userInRooms?.map((value) => value.roomId);
+      room?.map((id) => {
+        socket.join(JSON.stringify(id));
       });
     });
 
-    socket.on("disconnect", () => {
-      console.log("disconnect");
-    });
+    socket.on(
+      "message",
+      (data: { email: string; roomId: number; message: string }) => {
+        socket.to(JSON.stringify(data.roomId)).emit(data.message);
+      }
+    );
   });
+
+  const room = io.of("/room");
+
+  room.on("connection", async (socket: Socket) => {});
 };

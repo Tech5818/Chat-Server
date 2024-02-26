@@ -42,7 +42,7 @@ class UserService {
       });
 
       if (!user) {
-        return false;
+        return null;
       }
 
       return user;
@@ -56,6 +56,27 @@ class UserService {
       const users = await prisma.user.findMany({ include: { rooms: true } });
 
       return users;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async getInRooms(email: string) {
+    try {
+      const user = await prisma.user.findUnique({
+        where: {
+          email,
+        },
+        include: {
+          rooms: true,
+        },
+      });
+
+      if (!user) return null;
+
+      const userInRooms = user.rooms;
+
+      return userInRooms;
     } catch (error) {
       console.error(error);
     }
@@ -75,13 +96,10 @@ class UserService {
         },
       });
 
-      console.log(existingUser);
-
       if (existingUser) return false;
 
       const newData = { ...user };
       delete newData.id;
-      console.log(newData);
 
       for (const key in editData) {
         newData[key as keyof Partial<IUpdateUser>] =

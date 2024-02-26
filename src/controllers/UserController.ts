@@ -41,7 +41,7 @@ class UserController {
     try {
       const user = await this.userService.getUser(email);
 
-      if (user === false) {
+      if (!user) {
         return res
           .status(404)
           .json({ error: "해당 email을 가진 유저는 없습니다." });
