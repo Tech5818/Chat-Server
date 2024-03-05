@@ -19,6 +19,26 @@ import { ICreateUser, IUpdateUser } from "../types/UserType";
 class UserController {
   constructor(private userService: UserService) {}
 
+  @Post("/login")
+  @HttpCode(200)
+  async loginUser(
+    @Body() body: { email: string; password: string },
+    @Res() res: Response
+  ) {
+    try {
+      const user = await this.userService.getUser(body.email);
+
+      if (!user) return res.status(404).json({ error: "잘못된 이메일" });
+      if (user?.password === body.password) {
+        return res.status(200).end();
+      }
+
+      return res.status(404).json({ error: "잘못된 비밀번호" });
+    } catch (error) {
+      res.status(500).json({ error });
+    }
+  }
+
   @Post("/create")
   @HttpCode(201)
   async createUser(@Body() body: ICreateUser, @Res() res: Response) {

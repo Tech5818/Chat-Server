@@ -29,12 +29,14 @@ export const setSocketServer = (
       room?.map((id) => {
         socket.join(JSON.stringify(id));
       });
+      console.log(user, userInRooms, data.email, room);
     });
 
     socket.on(
       "message",
       (data: { email: string; roomId: number; message: string }) => {
-        socket.to(JSON.stringify(data.roomId)).emit(data.message);
+        socket.to(JSON.stringify(data.roomId)).emit("message", data.message);
+        console.log("emitdata", data);
       }
     );
   });
