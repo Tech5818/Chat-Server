@@ -1,12 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 import { Service } from "typedi";
-import { ICreateUser, IUpdateUser } from "../types/UserType";
+import { IUser, IUpdateUser } from "../types/UserType";
 
 const prisma = new PrismaClient();
 
 @Service()
 class UserService {
-  async createUser({ username, password, email }: ICreateUser) {
+  async createUser({ username, password, email }: IUser) {
     try {
       const existingUser = await prisma.user.findUnique({
         where: {

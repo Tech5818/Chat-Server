@@ -12,7 +12,8 @@ import {
 import { Service } from "typedi";
 import UserService from "../service/UserService";
 import { Response } from "express";
-import { ICreateUser, IUpdateUser } from "../types/UserType";
+import { IUser, IUpdateUser } from "../types/UserType";
+import { JwtUtil } from "../util/JWT";
 
 @JsonController("/user")
 @Service()
@@ -27,10 +28,13 @@ class UserController {
   ) {
     try {
       const user = await this.userService.getUser(body.email);
-
+      const token = JwtUtil.generateToken({
+        username: user!.username,
+        email: user!.email,
+      });
       if (!user) return res.status(404).json({ error: "잘못된 이메일" });
       if (user?.password === body.password) {
-        return res.status(200).end();
+        return res.status(200).json({ token });
       }
 
       return res.status(404).json({ error: "잘못된 비밀번호" });
@@ -41,7 +45,7 @@ class UserController {
 
   @Post("/create")
   @HttpCode(201)
-  async createUser(@Body() body: ICreateUser, @Res() res: Response) {
+  async createUser(@Body() body: IUser, @Res() res: Response) {
     try {
       const newUser = await this.userService.createUser(body);
 
