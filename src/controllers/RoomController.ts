@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   JsonController,
+  Params,
   Patch,
   Post,
   Put,
@@ -60,9 +61,21 @@ class RoomController {
   @HttpCode(200)
   async getRooms(@Res() res: Response) {
     try {
-      const rooms = await this.roomService.getRooms();
+      const rooms = await this.roomService.getRooms()!;
 
       return res.status(200).json({ data: rooms });
+    } catch (error) {
+      res.status(500).json({ error });
+    }
+  }
+
+  @Get("/getUserRooms")
+  @HttpCode(200)
+  async getUserRooms(@QueryParam("email") email: string, @Res() res: Response) {
+    try {
+      const user = await this.roomService.getUserRooms(email);
+
+      return res.status(200).json({ data: user });
     } catch (error) {
       res.status(500).json({ error });
     }

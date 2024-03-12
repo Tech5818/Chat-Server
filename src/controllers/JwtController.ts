@@ -27,9 +27,10 @@ class JwtController {
         return res.status(404).json({ error: "토큰이 존재하지 않습니다." });
 
       const verify = JwtUtil.verifyToken(token);
-
+      if (!verify)
+        return res.status(404).json({ error: "토큰이 유효하지 않습니다." });
       console.log(verify);
-      return res.status(200).json({ message: "유효한 토큰" });
+      return res.status(200).json({ data: verify });
     } catch (error) {
       res.status(500).json({ error });
     }

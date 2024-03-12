@@ -22,6 +22,7 @@ model User {
   rooms UserRoom[]
   sentMessages Message[] @relation("sentMessages")
   receviedMessages Message[] @relation("receviedMessages")
+  @@unique([id,email])
 }
 
 model Room {
@@ -45,8 +46,8 @@ model Message {
 
 model UserRoom {
   id Int @id @default(autoincrement())
-  userId Int
+  userEmail String 
   roomId Int
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userEmail], references: [email])
   room Room @relation(fields: [roomId], references: [id])
 }

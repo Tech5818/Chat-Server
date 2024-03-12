@@ -12,19 +12,23 @@ class RoomService {
           email,
         },
       });
+      console.log(user);
+
       if (!user) return null;
       const room = await prisma.room.create({
         data: {
           name,
         },
       });
+      console.log(room);
 
       const userRoom = await prisma.userRoom.create({
         data: {
-          userId: user.id,
+          userEmail: user.email,
           roomId: room.id,
         },
       });
+      console.log(userRoom);
 
       const data = {
         user,
@@ -72,6 +76,25 @@ class RoomService {
     }
   }
 
+  async getUserRooms(email: string) {
+    try {
+      const user = await prisma.user.findUnique({
+        include: {
+          rooms: true,
+        },
+        where: {
+          email,
+        },
+      })!;
+      const rooms = user?.rooms;
+      console.log(rooms);
+
+      return user;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   async joinRoom(roomId: number, email: string) {
     try {
       const user = await prisma.user.findUnique({
@@ -93,7 +116,7 @@ class RoomService {
       const userRoom = await prisma.userRoom.create({
         data: {
           roomId: room.id,
-          userId: user.id,
+          userEmail: user.email,
         },
       });
 
@@ -122,7 +145,7 @@ class RoomService {
 
       const userRoom = await prisma.userRoom.findFirst({
         where: {
-          userId: user.id,
+          userEmail: user.email,
           roomId: room.id,
         },
       });
