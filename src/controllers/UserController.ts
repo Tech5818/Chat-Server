@@ -79,12 +79,23 @@ class UserController {
 
   @Get("/getAll")
   @HttpCode(200)
-  async getUsers(@Res() res: Response) {
+  async getAll(@Res() res: Response) {
     try {
-      const user = await this.userService.getUsers();
+      const user = await this.userService.getAll();
       return res.status(200).json({ data: user });
     } catch (error) {
       console.error(error);
+      res.status(500).json({ error });
+    }
+  }
+  @Get("/getUsers")
+  @HttpCode(200)
+  async getUsers(@QueryParam("id") usersId: string[], @Res() res: Response) {
+    try {
+      const data = await this.userService.getUsers(usersId);
+
+      return res.status(200).json({ data });
+    } catch (error) {
       res.status(500).json({ error });
     }
   }

@@ -51,9 +51,34 @@ class UserService {
     }
   }
 
-  async getUsers() {
+  async getAll() {
     try {
       const users = await prisma.user.findMany({ include: { rooms: true } });
+
+      return users;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async getUsers(usersId: string[]) {
+    try {
+      const users: ({
+        id: number;
+        username: string;
+        email: string;
+        password: string;
+        createAt: Date;
+      } | null)[] = [];
+      for (const value of usersId) {
+        const user = await prisma.user.findUnique({
+          where: {
+            id: parseInt(value),
+          },
+        });
+        console.log(user);
+        if (user) users.push(user);
+      }
 
       return users;
     } catch (error) {
