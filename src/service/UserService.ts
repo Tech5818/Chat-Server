@@ -61,7 +61,7 @@ class UserService {
     }
   }
 
-  async getUsers(usersId: string[]) {
+  async getUsers(usersEmail: string[]) {
     try {
       const users: ({
         id: number;
@@ -70,13 +70,12 @@ class UserService {
         password: string;
         createAt: Date;
       } | null)[] = [];
-      for (const value of usersId) {
+      for (const value of usersEmail) {
         const user = await prisma.user.findUnique({
           where: {
-            id: parseInt(value),
+            email: value,
           },
         });
-        console.log(user);
         if (user) users.push(user);
       }
 

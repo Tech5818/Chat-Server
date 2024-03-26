@@ -90,9 +90,12 @@ class UserController {
   }
   @Get("/getUsers")
   @HttpCode(200)
-  async getUsers(@QueryParam("id") usersId: string[], @Res() res: Response) {
+  async getUsers(
+    @QueryParam("email") usersEmail: string[],
+    @Res() res: Response
+  ) {
     try {
-      const data = await this.userService.getUsers(usersId);
+      const data = await this.userService.getUsers(usersEmail);
 
       return res.status(200).json({ data });
     } catch (error) {

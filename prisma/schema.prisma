@@ -21,7 +21,6 @@ model User {
   createAt DateTime @default(now())
   rooms UserRoom[]
   sentMessages Message[] @relation("sentMessages")
-  receviedMessages Message[] @relation("receviedMessages")
   @@unique([id,email])
 }
 
@@ -35,10 +34,8 @@ model Room {
 model Message {
   id Int @id @default(autoincrement())
   content String
-  senderId Int
-  sender User @relation("sentMessages",fields: [senderId], references: [id])
-  recevierId Int
-  recevier User @relation("receviedMessages",fields: [recevierId], references: [id])
+  senderEmail String
+  sender User @relation("sentMessages",fields: [senderEmail], references: [email])
   roomId Int
   room Room @relation(fields: [roomId], references: [id])
   createAt DateTime @default(now())

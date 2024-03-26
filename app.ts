@@ -27,12 +27,20 @@ import UserContoller from "./src/controllers/UserController";
 import RoomService from "./src/service/RoomService";
 import RoomController from "./src/controllers/RoomController";
 import JwtController from "./src/controllers/JwtController";
+import MessageService from "./src/service/MessageService";
+import MessageController from "./src/controllers/MessageController";
 Container.set(UserService, new UserService());
 Container.set(RoomService, new RoomService());
+Container.set(MessageService, new MessageService());
 useContainer(Container);
 
 useExpressServer(app, {
-  controllers: [UserContoller, RoomController, JwtController],
+  controllers: [
+    UserContoller,
+    RoomController,
+    JwtController,
+    MessageController,
+  ],
 });
 
 export default app;

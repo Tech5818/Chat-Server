@@ -12,7 +12,6 @@ class RoomService {
           email,
         },
       });
-      console.log(user);
 
       if (!user) return null;
       const room = await prisma.room.create({
@@ -20,7 +19,6 @@ class RoomService {
           name,
         },
       });
-      console.log(room);
 
       const userRoom = await prisma.userRoom.create({
         data: {
@@ -28,7 +26,6 @@ class RoomService {
           roomId: room.id,
         },
       });
-      console.log(userRoom);
 
       const data = {
         user,
@@ -86,8 +83,6 @@ class RoomService {
           email,
         },
       })!;
-      const rooms = user?.rooms;
-      console.log(rooms);
 
       return user;
     } catch (error) {
@@ -104,7 +99,6 @@ class RoomService {
       });
 
       if (!user) return null;
-      console.log(typeof roomId);
 
       const room = await prisma.room.findUnique({
         where: {

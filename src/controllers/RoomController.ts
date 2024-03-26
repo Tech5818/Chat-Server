@@ -4,7 +4,6 @@ import {
   Get,
   HttpCode,
   JsonController,
-  Params,
   Patch,
   Post,
   Put,
@@ -88,8 +87,6 @@ class RoomController {
     @Res() res: Response
   ) {
     try {
-      console.log(typeof body.roomId);
-
       const room = await this.roomService.joinRoom(body.roomId, body.email);
 
       if (!room)
