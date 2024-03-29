@@ -29,15 +29,24 @@ export const setSocketServer = (
 
     socket.on(
       "message",
-      async (data: { email: string; roomId: number; message: string }) => {
+      async (
+        data: { email: string; roomId: number; message: string },
+        callback
+      ) => {
         try {
-          const message = await messageService.createMessage(
-            data.message,
-            data.roomId,
-            data.email
-          );
-          socket.to(data.roomId.toString()).emit("message", message);
-          console.log("emitdata", data);
+          const message = new Promise((resolve) => {
+            const newMessage = messageService.createMessage(
+              data.message,
+              data.roomId,
+              data.email
+            );
+
+            resolve(newMessage);
+          });
+          message.then((res) => {
+            socket.in(data.roomId.toString()).emit("message", res);
+            console.log("emit: ", res);
+          });
         } catch (error) {
           socket.emit("error", error);
           console.error(error);

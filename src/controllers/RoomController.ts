@@ -8,6 +8,7 @@ import {
   Post,
   Put,
   QueryParam,
+  QueryParams,
   Res,
 } from "routing-controllers";
 import { Service } from "typedi";
@@ -80,6 +81,24 @@ class RoomController {
     }
   }
 
+  @Get("/getIsIn")
+  @HttpCode(200)
+  async userIsIn(
+    @QueryParam("id") id: number,
+    @QueryParam("email") email: string,
+    @Res() res: Response
+  ) {
+    try {
+      const response = await this.roomService.userIsIn(id, email);
+
+      return res.status(200).json({
+        data: response,
+      });
+    } catch (error) {
+      res.status(500).json({ error });
+    }
+  }
+
   @Put("/join")
   @HttpCode(200)
   async joinRoom(
@@ -122,9 +141,9 @@ class RoomController {
 
   @Delete("/delete")
   @HttpCode(200)
-  async deleteRoom(@Body() body: { roomId: number }, @Res() res: Response) {
+  async deleteRoom(@QueryParam("id") roomId: number, @Res() res: Response) {
     try {
-      const room = await this.roomService.deleteRoom(body.roomId);
+      const room = await this.roomService.deleteRoom(roomId);
 
       if (!room)
         return res

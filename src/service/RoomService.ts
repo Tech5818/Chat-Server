@@ -73,6 +73,28 @@ class RoomService {
     }
   }
 
+  async userIsIn(roomId: number, email: string) {
+    try {
+      const room = await prisma.room.findUnique({
+        where: {
+          id: roomId,
+        },
+        include: {
+          users: {
+            where: {
+              userEmail: email,
+            },
+          },
+        },
+      });
+
+      if (room) return { isIn: true, length: room.users.length };
+      return false;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   async getUserRooms(email: string) {
     try {
       const user = await prisma.user.findUnique({

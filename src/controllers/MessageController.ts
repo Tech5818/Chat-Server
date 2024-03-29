@@ -18,5 +18,16 @@ class MessageController {
       res.status(500).json(error);
     }
   }
+
+  @Get("/getRecentMessage")
+  async getRecentMessage(@QueryParam("id") id: number, @Res() res: Response) {
+    try {
+      const message = await this.messageService.getRecentMessage(id);
+
+      return res.status(200).json({ data: message });
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  }
 }
 export default MessageController;

@@ -32,6 +32,9 @@ class MessageService {
         where: {
           roomId,
         },
+        orderBy: {
+          id: "desc",
+        },
       });
 
       if (!message) return false;
