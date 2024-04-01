@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 @Service()
 class RoomService {
-  async createRoom(name: string, email: string) {
+  async createRoom(name: string, description: string, email: string) {
     try {
       const user = await prisma.user.findUnique({
         where: {
@@ -17,6 +17,7 @@ class RoomService {
       const room = await prisma.room.create({
         data: {
           name,
+          description,
         },
       });
 
@@ -80,16 +81,20 @@ class RoomService {
           id: roomId,
         },
         include: {
-          users: {
-            where: {
-              userEmail: email,
-            },
-          },
+          users: true,
         },
       });
 
-      if (room) return { isIn: true, length: room.users.length };
-      return false;
+      let IsIn = false;
+      room?.users.map((value) => {
+        if (value.userEmail === email) {
+          IsIn = true;
+        }
+      });
+      if (room && room.users.length > 0) {
+        return { isIn: IsIn, length: room.users.length };
+      }
+      return { isIn: IsIn, length: room!.users.length };
     } catch (error) {
       console.error(error);
     }
@@ -191,7 +196,11 @@ class RoomService {
           roomId: room.id,
         },
       });
-
+      await prisma.message.deleteMany({
+        where: {
+          roomId: room.id,
+        },
+      });
       const deleteRoom = await prisma.room.delete({
         where: {
           id: room.id,

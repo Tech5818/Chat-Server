@@ -23,11 +23,15 @@ class RoomController {
   @Post("/create")
   @HttpCode(201)
   async createRoom(
-    @Body() body: { name: string; email: string },
+    @Body() body: { name: string; description: string; email: string },
     @Res() res: Response
   ) {
     try {
-      const room = await this.roomService.createRoom(body.name, body.email);
+      const room = await this.roomService.createRoom(
+        body.name,
+        body.description,
+        body.email
+      );
 
       if (!room)
         return res
